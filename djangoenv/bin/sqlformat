@@ -1,6 +1,4 @@
-#!/bin/sh
-'''exec' "/Users/sailesh/Desktop/Student Management System Project In Django Source Code/djangoenv/bin/python3.11" "$0" "$@"
-' '''
+#!/Users/sailesh/Downloads/AttendenceMgmtSys/djangoenv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys

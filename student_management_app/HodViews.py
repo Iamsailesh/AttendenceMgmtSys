@@ -327,59 +327,69 @@ def add_student(request):
     }
     return render(request, 'hod_template/add_student_template.html', context)
 
-
-
-
 def add_student_save(request):
     if request.method != "POST":
         messages.error(request, "Invalid Method")
         return redirect('add_student')
     else:
-        form = AddStudentForm(request.POST, request.FILES)
+        # form = AddStudentForm(request.POST, request.FILES)
 
-        if form.is_valid():
-            first_name = form.cleaned_data['first_name']
-            last_name = form.cleaned_data['last_name']
-            username = form.cleaned_data['username']
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
-            address = form.cleaned_data['address']
-            session_year_id = form.cleaned_data['session_year_id']
-            course_id = form.cleaned_data['course_id']
-            gender = form.cleaned_data['gender']
+        # if form.is_valid():
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        address = request.POST.get('address')
+        session_year_id = request.POST.get('session_year_id')
+        course_id = request.POST.get('course_id')
+        gender = request.POST.get('gender')
 
             # Getting Profile Pic first
             # First Check whether the file is selected or not
             # Upload only if file is selected
-            if len(request.FILES) != 0:
-                profile_pic = request.FILES['profile_pic']
-                fs = FileSystemStorage()
-                filename = fs.save(profile_pic.name, profile_pic)
-                profile_pic_url = fs.url(filename)
-            else:
-                profile_pic_url = None
-
-
-            try:
-                user = CustomUser.objects.create_user(username=username, password=password, email=email, first_name=first_name, last_name=last_name, user_type=3)
-                user.students.address = address
-
-                course_obj = Courses.objects.get(id=course_id)
-                user.students.course_id = course_obj
-
-                session_year_obj = SessionYearModel.objects.get(id=session_year_id)
-                user.students.session_year_id = session_year_obj
-
-                user.students.gender = gender
-                user.students.profile_pic = profile_pic_url
-                user.save()
-                messages.success(request, "Student Added Successfully!")
-                return redirect('add_student')
-            except:
-                messages.error(request, "Failed to Add Student!")
-                return redirect('add_student')
+        if len(request.FILES) != 0:
+            profile_pic = request.FILES['profile_pic']
+            fs = FileSystemStorage()
+            filename = fs.save(profile_pic.name, profile_pic)
+            profile_pic_url = fs.url(filename)
         else:
+            profile_pic_url = None
+
+
+        try:
+            print("1")
+            # user = CustomUser.objects.create_user(username=username, password=password, email=email, first_name=first_name, last_name=last_name, user_type=5)
+            try:
+                user = CustomUser.objects.create_user(username=username, password=password, email=email, first_name=first_name, last_name=last_name, user_type=5)
+            except Exception as e:
+                print(e)
+            print("2")
+            try:
+                user.students.address = address
+            except Exception as e:
+                return e
+            print("3")
+            course_obj = Courses.objects.get(id=course_id)
+            print("4")
+            user.students.course_id = course_obj
+            print("5")
+            session_year_obj = SessionYearModel.objects.get(id=session_year_id)
+            print("6")
+            user.students.session_year_id = session_year_obj
+            print("7")
+            user.students.gender = gender
+            print("8")
+            user.students.profile_pic = profile_pic_url
+            user.save()
+            print("9")
+            messages.success(request, "Student Added Successfully!")
             return redirect('add_student')
+        except:
+            messages.error(request, "Failed to Add Student!")
+            return redirect('add_student')
+        # else:
+        #     return redirect('add_student')
 
 
 def manage_student(request):

@@ -41,6 +41,7 @@ def student_home(request):
     return render(request, "student_template/student_home_template.html", context)
 
 
+
 def student_view_attendance(request):
     student = Students.objects.get(admin=request.user.id) # Getting Logged in Student Data
     course = student.course_id # Getting Course Enrolled of LoggedIn Student

@@ -15,7 +15,7 @@ class SessionYearModel(models.Model):
 
 # Overriding the Default Django Auth User and adding One More Field (user_type)
 class CustomUser(AbstractUser):
-    user_type_data = ((1, "HOD"), (2, "Staff"), (3, "Student"))
+    user_type_data = ((1, "HOD"), (2, "Staff"), (5, "Student"))
     user_type = models.CharField(default=1, choices=user_type_data, max_length=10)
 
 
@@ -182,8 +182,9 @@ def create_user_profile(sender, instance, created, **kwargs):
             AdminHOD.objects.create(admin=instance)
         if instance.user_type == 2:
             Staffs.objects.create(admin=instance)
-        if instance.user_type == 3:
-            Students.objects.create(admin=instance, course_id=Courses.objects.get(id=1), session_year_id=SessionYearModel.objects.get(id=1), address="", profile_pic="", gender="")
+        if instance.user_type == 5:
+            # Students.objects.create(admin=instance, course_id=Courses.objects.get(id=1), session_year_id=SessionYearModel.objects.get(id=1), address="", profile_pic="", gender="")
+            Students.objects.create(admin=instance)
     
 
 @receiver(post_save, sender=CustomUser)
@@ -192,7 +193,7 @@ def save_user_profile(sender, instance, **kwargs):
         instance.adminhod.save()
     if instance.user_type == 2:
         instance.staffs.save()
-    if instance.user_type == 3:
+    if instance.user_type == 5:
         instance.students.save()
     
 
